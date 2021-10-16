@@ -15,10 +15,10 @@ void enableRawMode() {
     tcgetattr(STDIN_FILENO, &orig_termios);
     atexit(disableRawMode);
 
-
     struct termios raw = orig_termios;
     // Disables each key typed to be printed to the terminal
-    raw.c_lflag &= ~(ECHO | ICANON);
+    raw.c_iflag &- ~(IXON);
+    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 
     // Apply terminal attributes
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
