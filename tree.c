@@ -25,7 +25,7 @@ void die(const char *s) {
 
 void disableRawMode() {
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == 1)
-        atexit(disableRawMode);
+        die("tcsetattr");
 }
 
 void enableRawMode() {
@@ -56,6 +56,12 @@ char editorReadKey() {
     return c;
 }
 
+/*** output ***/
+
+void editorRefreshScreen() {
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+}
+
 /*** input ***/
 
 // Handles keypresses
@@ -75,6 +81,7 @@ int main() {
     enableRawMode();
 
     while (1) {
+        editorRefreshScreen();
         editorProcessKeypress();
     }
     return 0;
