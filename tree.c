@@ -74,7 +74,7 @@ int editorReadKey() {
         if (nread == -1 && errno != EAGAIN) die("read");
     }
 
-    if (c == '\x1') {
+    if (c == '\x1b') {
         char seq[3];
 
         if (read(STDIN_FILENO, &seq[0], 1) != 1) return '\x1b';
