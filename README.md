@@ -1,5 +1,5 @@
 # tree
- A simple text editor written in C
+ A simple text editor loosly based off of Vim written in C
  
 ![image](https://user-images.githubusercontent.com/29133471/137760828-fe38161c-f078-4498-8edc-c963bd0625aa.png)
 
