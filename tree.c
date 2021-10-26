@@ -65,6 +65,11 @@ struct editorConfig {
 
 struct editorConfig E;
 
+/*** prototypes ***/
+
+// Allows us to call this method before it is defined
+void editorSetStatusMessage(const char *fmt, ...);
+
 /*** terminal ***/
 
 // Error handling
@@ -303,10 +308,22 @@ void editorSave() {
     char *buf = editorRowsToString(&len);
 
     int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
-    ftruncate(fd, len);
-    write(fd, buf, len);
-    close(fd);
+
+    //Hanld eif an error occured on save
+    if (fd != -1) {
+        if (ftruncate(fd, len) != -1) {
+            if (write(fd, buf, len) == len)
+            {
+                close(fd);
+                free(buf);
+                editorSetStatusMessage("%d bytes written to disk", len);
+                return;
+            }
+        }
+        close(fd);
+    }
     free(buf);
+    editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
 }
 
 /*** append buffer ***/
@@ -589,7 +606,7 @@ int main(int argc, char *argv[]) {
         editorOpen(argv[1]);
     }
 
-    editorSetStatusMessage("HELP: Ctrl-Q = quit");
+    editorSetStatusMessage("HELP: Ctrl-s = save | Ctrl-Q = quit");
 
     while (1) {
         editorRefreshScreen();
